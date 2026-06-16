@@ -11,10 +11,10 @@ test / feature. No task here is security/infra/always-human.
 - [X] T003 [feature] contracts/usage.schema.json + usage.example.json (stub shape).
 
 ## Phase 1 — Gate-first tests (write BEFORE implementation)
-- [ ] T010 [test] test_readonly.py — no mutating routes; no LLM/orchestrator-dispatch
+- [X] T010 [test] test_readonly.py — no mutating routes; no LLM/orchestrator-dispatch
   import; no on-disk writes.
-- [ ] T011 [test] test_localhost.py — binds 127.0.0.1, never 0.0.0.0.
-- [ ] T012 [test] test_degradation.py — runstate+usage absent → 200, panels 5/6 pending.
+- [X] T011 [test] test_localhost.py — binds 127.0.0.1, never 0.0.0.0.
+- [X] T012 [test] test_degradation.py — runstate+usage absent → 200, panels 5/6 pending.
 
 ## Phase 2 — Backend read endpoints
 - [ ] T020 [feature] config.py — HOST/PORT/paths/current-sprint/NTFY topic (from conductor.config).

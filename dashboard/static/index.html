@@ -1,10 +1,63 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><title>Magrathea dashboard</title></head>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark light">
+  <title>Magrathea · ops</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
 <body>
-<!-- Placeholder served by Phase 2 so the API gate is green. The full responsive
-     page (panels, CSS, JS) lands in Phase 3. -->
-<h1>Magrathea dashboard</h1>
-<p>read-only · localhost · backend up</p>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">M</span>
+      <h1>Magrathea</h1>
+      <span class="badge badge-ro" title="GET only, no writes, no model">read-only</span>
+    </div>
+    <div class="meta">
+      <span id="sprint-chip" class="chip">sprint —</span>
+      <button id="refresh" class="btn" type="button" aria-label="Refresh">↻</button>
+    </div>
+  </header>
+
+  <main class="grid">
+    <section class="panel span-2" data-panel="topology">
+      <div class="panel-head"><h2>Agent topology</h2><span class="src" data-src></span></div>
+      <div class="panel-body" data-body><div class="loading">loading…</div></div>
+    </section>
+
+    <section class="panel" data-panel="sprint">
+      <div class="panel-head"><h2>Sprint board</h2><span class="src" data-src></span></div>
+      <div class="panel-body" data-body><div class="loading">loading…</div></div>
+    </section>
+
+    <section class="panel" data-panel="governance">
+      <div class="panel-head"><h2>Governance <span class="safety" title="visible rules make a bad edit obvious">safety surface</span></h2><span class="src" data-src></span></div>
+      <div class="panel-body" data-body><div class="loading">loading…</div></div>
+    </section>
+
+    <section class="panel span-2" data-panel="timeline">
+      <div class="panel-head"><h2>Timeline</h2><span class="src" data-src></span></div>
+      <div class="panel-body" data-body><div class="loading">loading…</div></div>
+    </section>
+
+    <section class="panel" data-panel="runstate">
+      <div class="panel-head"><h2>Live tasks</h2><span class="pill pill-v2">v2</span></div>
+      <div class="panel-body" data-body><div class="loading">loading…</div></div>
+    </section>
+
+    <section class="panel" data-panel="budget">
+      <div class="panel-head"><h2>Budget &amp; limits</h2><span class="pill pill-v2">v2</span></div>
+      <div class="panel-body" data-body><div class="loading">loading…</div></div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span>Magrathea dashboard · a read-only projection · localhost only · no model calls</span>
+    <span id="status-dot" class="dot" title="last refresh"></span>
+  </footer>
+
+  <script src="/static/app.js"></script>
 </body>
 </html>

@@ -13,3 +13,6 @@ gate/purl.py
 *.pem
 *.key
 secrets/
+# harness/editor-local config and runtime state
+.claude/
+.magrathea/

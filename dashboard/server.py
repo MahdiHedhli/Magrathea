@@ -83,6 +83,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-Type", _CONTENT_TYPES.get(ext, "text/plain; charset=utf-8"))
         self.send_header("Content-Length", str(len(data)))
+        self.send_header("Cache-Control", "no-store")  # live dashboard: never cache assets
         self.end_headers()
         self.wfile.write(data)
 

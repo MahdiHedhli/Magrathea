@@ -23,13 +23,13 @@ test / feature. No task here is security/infra/always-human.
 - [X] T023 [test] gate green: `pytest dashboard/tests -q` (13 passed).
 
 ## Phase 3 — Responsive frontend
-- [ ] T030 [feature] static/index.html — single page, 6 panels.
-- [ ] T031 [feature] static/style.css — mobile-first, dark-mode, no h-scroll.
-- [ ] T032 [feature] static/app.js — fetch /api/*, render, graceful pending.
+- [X] T030 [feature] static/index.html — single page, 6 panels.
+- [X] T031 [feature] static/style.css — mobile-first, dark-mode, no h-scroll.
+- [X] T032 [feature] static/app.js — fetch /api/*, render, graceful pending.
 
 ## Phase 4 — Wire & prove
-- [ ] T040 [feature] panels 1–4 wired to real files; 5–6 pending.
-- [ ] T041 [test] prove: start on localhost, verify panels + narrow-viewport reflow. Record.
+- [X] T040 [feature] panels 1–4 wired to real files; 5–6 pending.
+- [X] T041 [test] prove: start on localhost, verify panels + narrow-viewport reflow. Record (PROOF.md).
 
 ## Phase 5 — Sweep & push
 - [ ] T050 secrets sweep; commit; reconcile (no force); push; governed NTFY.

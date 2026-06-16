@@ -17,10 +17,10 @@ test / feature. No task here is security/infra/always-human.
 - [X] T012 [test] test_degradation.py — runstate+usage absent → 200, panels 5/6 pending.
 
 ## Phase 2 — Backend read endpoints
-- [ ] T020 [feature] config.py — HOST/PORT/paths/current-sprint/NTFY topic (from conductor.config).
-- [ ] T021 [feature] sources.py — topology, sprint, timeline, governance, runstate, budget (read-only).
-- [ ] T022 [feature] server.py — stdlib http.server, do_GET only, 127.0.0.1, /api/* + static.
-- [ ] T023 [test] gate green: `pytest dashboard/tests -q`.
+- [X] T020 [feature] config.py — HOST/PORT/paths/current-sprint/NTFY topic (from conductor.config).
+- [X] T021 [feature] sources.py — topology, sprint, timeline, governance, runstate, budget (read-only).
+- [X] T022 [feature] server.py — stdlib http.server, do_GET only, 127.0.0.1, /api/* + static.
+- [X] T023 [test] gate green: `pytest dashboard/tests -q` (13 passed).
 
 ## Phase 3 — Responsive frontend
 - [ ] T030 [feature] static/index.html — single page, 6 panels.

@@ -1,0 +1,4 @@
+# Conductor — pinned dependencies (installed into ./.venv, never globally).
+# Only the deterministic gate runner needs a third-party package; the MCP
+# control surface and NTFY reporter are stdlib-only.
+pytest==8.4.2

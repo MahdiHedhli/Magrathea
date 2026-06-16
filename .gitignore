@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+logs/*.jsonl
+logs/*.log
+logs/*.out
+.pytest_cache/
+# worker output is regenerated each run; keep it out of version control
+gate/purl.py
+# secrets — never commit (Constitution III: governance/secrets outside scope)
+.env
+.env.*
+*.pem
+*.key
+secrets/

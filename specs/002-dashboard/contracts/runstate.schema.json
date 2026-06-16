@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MahdiHedhli/Magrathea/specs/002-dashboard/contracts/runstate.schema.json",
+  "title": "Magrathea runstate",
+  "description": "The durable record of a governed run, written by the runtime (a LATER sprint) and read by the dashboard live-task panel. This file defines the agreed shape so the two consumers cannot disagree. The dashboard NEVER writes it; on absence it renders a pending state. Canonical on-disk path: .magrathea/runstate.json (orchestrator-owned, outside every worker's writable scope).",
+  "type": "object",
+  "required": ["run_id", "status", "current_sprint", "task_queue"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "description": "Semver of this contract.",
+      "default": "1.0.0"
+    },
+    "run_id": {
+      "type": "string",
+      "description": "Stable id for this run."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["running", "paused", "blocked", "done"],
+      "description": "running=work in flight; paused=limit-hit, awaiting reset (see paused_reset_time); blocked=escalated to operator; done=complete."
+    },
+    "current_sprint": {
+      "type": "string",
+      "description": "The spec directory this run is executing, e.g. '002-dashboard'."
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp of the last write."
+    },
+    "task_queue": {
+      "type": "array",
+      "description": "Every task in the run, in order.",
+      "items": {
+        "type": "object",
+        "required": ["id", "status"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "description": "Task id, e.g. 'T021'." },
+          "status": {
+            "type": "string",
+            "enum": ["queued", "dispatched", "passed", "failed", "blocked", "escalated"],
+            "description": "Lifecycle of one task."
+          },
+          "thread_id": {
+            "type": ["string", "null"],
+            "description": "Codex threadId once dispatched; null while queued."
+          },
+          "gate_result": {
+            "type": ["object", "null"],
+            "additionalProperties": false,
+            "description": "The deterministic gate outcome (null until run).",
+            "properties": {
+              "passed": { "type": "boolean" },
+              "summary": { "type": "string", "description": "e.g. '8 passed in 0.01s'." },
+              "returncode": { "type": "integer" }
+            },
+            "required": ["passed"]
+          }
+        }
+      }
+    },
+    "in_flight": {
+      "type": ["object", "null"],
+      "description": "The single task currently executing, or null when idle/paused.",
+      "additionalProperties": false,
+      "required": ["id", "thread_id"],
+      "properties": {
+        "id": { "type": "string" },
+        "thread_id": { "type": "string", "description": "Codex threadId to reattach on resume (Constitution VII)." },
+        "provider": { "type": "string", "description": "e.g. 'openai-codex'." },
+        "model": { "type": "string", "description": "e.g. 'gpt-5.5'." },
+        "started_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "checkpoint": {
+      "type": ["object", "null"],
+      "description": "Durable resume point: what is done, what remains. Free-form but stable.",
+      "additionalProperties": true,
+      "properties": {
+        "completed_task_ids": { "type": "array", "items": { "type": "string" } },
+        "note": { "type": "string" }
+      }
+    },
+    "paused_reset_time": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "When status=paused (limit-hit), the provider's known reset time the scheduler wakes at. null otherwise."
+    }
+  }
+}

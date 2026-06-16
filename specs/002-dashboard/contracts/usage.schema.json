@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MahdiHedhli/Magrathea/specs/002-dashboard/contracts/usage.schema.json",
+  "title": "Magrathea usage snapshot",
+  "description": "Per-provider, per-window headroom, produced by the usage adapters (a LATER sprint) and read by the dashboard budget panel. The dashboard NEVER writes it; on absence it renders a pending state. See governance/model-limit-policy.md for providers, windows, adapters (read/detect), and the stop threshold.",
+  "type": "object",
+  "required": ["generated_at", "stop_threshold_pct", "providers"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "default": "1.0.0" },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "stop_threshold_pct": {
+      "type": "number",
+      "description": "Orchestrator stops starting new work below this remaining headroom. Per governance: 15."
+    },
+    "providers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["provider", "adapter", "windows"],
+        "additionalProperties": false,
+        "properties": {
+          "provider": {
+            "type": "string",
+            "description": "e.g. 'openai-codex', 'anthropic-claude', 'google-gemini', 'xai-grok'."
+          },
+          "adapter": {
+            "type": "string",
+            "enum": ["read", "detect"],
+            "description": "read=usage queried; detect=coarse, limit-hit detected + counted locally."
+          },
+          "windows": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["window", "remaining_pct"],
+              "additionalProperties": false,
+              "properties": {
+                "window": {
+                  "type": "string",
+                  "enum": ["5h", "daily", "weekly", "monthly", "cumulative"],
+                  "description": "The limit window."
+                },
+                "used": { "type": ["number", "null"], "description": "Units consumed (null if unknown/detect)." },
+                "limit": { "type": ["number", "null"], "description": "Window limit (null if unknown/detect)." },
+                "remaining_pct": {
+                  "type": ["number", "null"],
+                  "description": "Headroom remaining, 0-100. null when detect cannot estimate."
+                },
+                "resets_at": { "type": ["string", "null"], "format": "date-time" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

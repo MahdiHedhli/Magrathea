@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "run-002-dashboard-0001",
+  "status": "running",
+  "current_sprint": "002-dashboard",
+  "updated_at": "2026-06-16T18:40:00Z",
+  "task_queue": [
+    {
+      "id": "T020",
+      "status": "passed",
+      "thread_id": "019ed197-fd13-7c71-a5b7-f7e46b38e11a",
+      "gate_result": { "passed": true, "summary": "3 passed in 0.04s", "returncode": 0 }
+    },
+    {
+      "id": "T021",
+      "status": "dispatched",
+      "thread_id": "019ed1a1-0b2c-7203-8d5e-416f9d942575",
+      "gate_result": null
+    },
+    {
+      "id": "T022",
+      "status": "queued",
+      "thread_id": null,
+      "gate_result": null
+    }
+  ],
+  "in_flight": {
+    "id": "T021",
+    "thread_id": "019ed1a1-0b2c-7203-8d5e-416f9d942575",
+    "provider": "openai-codex",
+    "model": "gpt-5.5",
+    "started_at": "2026-06-16T18:39:12Z"
+  },
+  "checkpoint": {
+    "completed_task_ids": ["T020"],
+    "note": "T021 in flight; T022 queued."
+  },
+  "paused_reset_time": null
+}

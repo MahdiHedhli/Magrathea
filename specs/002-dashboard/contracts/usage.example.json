@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-06-16T18:40:00Z",
+  "stop_threshold_pct": 15,
+  "providers": [
+    {
+      "provider": "openai-codex",
+      "adapter": "read",
+      "windows": [
+        { "window": "5h", "used": 120, "limit": 400, "remaining_pct": 70, "resets_at": "2026-06-16T21:00:00Z" },
+        { "window": "weekly", "used": 3100, "limit": 5000, "remaining_pct": 38, "resets_at": "2026-06-21T00:00:00Z" }
+      ]
+    },
+    {
+      "provider": "anthropic-claude",
+      "adapter": "detect",
+      "windows": [
+        { "window": "5h", "used": null, "limit": null, "remaining_pct": null, "resets_at": null },
+        { "window": "weekly", "used": null, "limit": null, "remaining_pct": null, "resets_at": null }
+      ]
+    }
+  ]
+}

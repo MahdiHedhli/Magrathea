@@ -16,14 +16,20 @@ The collision test (and the orchestrator) read these **before any task runs**.
 | `model-limit-policy.md` | Providers, limit windows, usage adapters (read/detect), stop thresholds, model floors. | D, E |
 | `cadence.md` | Commit cadence, reporting topic and triggers, escalation threshold, per-task timeouts, heartbeat intent. | G |
 
-## Status: TODO (awaiting the preflight sprint)
+## Status: compiled v1.0.0 (preflight 2026-06-16)
 
-This repo has been mapped to a Spec Kit structure; the five governance files
-above are produced by running the Magrathea project preflight (sections A–G).
-Until then, the run-time defaults are those in the constitution's *Operational
-Defaults* and the proven behavior recorded in `../STATUS.md` / `../SMOKETEST.md`
-/ `../BETA.md`.
+All five files are compiled from the Magrathea project preflight (sections A–G)
+and are human-owned. Key decisions captured: providers OpenAI/Codex (default
+worker, `gpt-5.5`), Claude (orchestrator + last-resort), Gemini & Grok (reserved
+slots); stop at 15% remaining headroom; limit-hit → pause + auto-resume at reset
+(scheduler is v2); always-human = security-sensitive, bulk deletes, and
+**git/GitHub history & log modification (immutable history)**; commit per phase;
+report to `Mahdi-Dev`; escalate after 2 gate failures; 420 s per-task timeout.
 
-> Editing rule: change these by human-reviewed commit only. The worker's
-> writable scope (see `worker.AGENTS.md` once generated) never includes this
-> directory, the constitution, secrets, or CI/infra config.
+**Deferred to v2** (intent captured, build later): the heartbeat/auto-resume
+scheduler; Gemini/Grok worker adapters and their usage `read` adapters; the
+Claude `detect` usage adapter.
+
+> Editing rule: change these by human-reviewed commit only. No worker's writable
+> scope includes this directory, the constitution, secrets, or CI/infra config.
+> Rewriting history or altering these files is always-human (`orchestrator.md`).

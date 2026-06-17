@@ -51,9 +51,10 @@ class CodexMCPError(RuntimeError):
 class CodexMCPClient:
     """A minimal, robust MCP stdio client specialized for ``codex mcp-server``."""
 
-    def __init__(self, cmd, log_path: Optional[Path] = None):
+    def __init__(self, cmd, log_path: Optional[Path] = None, env: Optional[dict] = None):
         self.cmd = list(cmd)
         self.log_path = Path(log_path) if log_path else None
+        self.env = env  # None => inherit; used to isolate the worker via CODEX_HOME
         self._proc: Optional[subprocess.Popen] = None
         self._q: "queue.Queue" = queue.Queue()
         self._next_id = 0
@@ -79,6 +80,7 @@ class CodexMCPClient:
             stderr=subprocess.PIPE,
             text=True,
             bufsize=1,
+            env=self.env,
         )
         t_out = threading.Thread(target=self._read_stdout, daemon=True)
         t_err = threading.Thread(target=self._drain_stderr, daemon=True)

@@ -17,13 +17,13 @@ Phase boundaries = commit boundaries. Class tags: test / feature / spike.
 - [X] T014 [test] test_governance.py — always-human descriptor refused + escalated.
 
 ## Phase 2 — Implement (spike first, then gate/descriptor, then runstate/governance)
-- [ ] T020 [feature] worker_home.py — isolated CODEX_HOME + copied auth + clean config.
-- [ ] T021 [feature] gate.py — generalized exit-code gate runner.
-- [ ] T022 [feature] descriptor.py — loader + validation.
-- [ ] T023 [feature] governance.py — load always-human + floors; check/refuse.
-- [ ] T024 [feature] runstate.py — lifecycle writer to committed contract.
-- [ ] T025 [feature] runtime.py — the dogfood loop; extend mcp_client for env.
-- [ ] T026 [test] gate green: `pytest runtime/tests -q`.
+- [X] T020 [feature] worker_home.py — isolated CODEX_HOME + copied auth + clean config.
+- [X] T021 [feature] gate.py — generalized exit-code gate runner.
+- [X] T022 [feature] descriptor.py — loader + validation.
+- [X] T023 [feature] governance.py — load always-human + floors; check/refuse.
+- [X] T024 [feature] runstate.py — lifecycle writer to committed contract.
+- [X] T025 [feature] runtime.py — the dogfood loop; extend mcp_client for env.
+- [X] T026 [test] gate green: `pytest runtime/tests -q`.
 
 ## Phase 3 — Prove
 - [ ] T030 descriptor-driven task → isolated worker → gate green (worker's code).

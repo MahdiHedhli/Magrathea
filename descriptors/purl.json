@@ -3,7 +3,7 @@
   "id": "purl-parser",
   "target_repo": ".",
   "working_dir": "gate",
-  "goal": "There is a pytest file gate/test_purl.py that fails because gate/purl.py is missing. Create gate/purl.py implementing parse_purl(purl) so every test passes. Read the test for the exact contract. Create only gate/purl.py; do not modify the test or conftest. Pure function, stdlib only. Reply with a one-line confirmation when done.",
+  "goal": "There is a pytest file test_purl.py in your current working directory that fails because purl.py is missing. Create purl.py (here, in your working directory) implementing parse_purl(purl) so every test passes. Read test_purl.py for the exact contract. Create ONLY purl.py; do not modify test_purl.py or conftest.py. Pure function, Python standard library only. Reply with a one-line confirmation when done.",
   "task_class": "feature",
   "gate_command": ".venv/bin/python -m pytest gate/test_purl.py -q",
   "gate_dir": ".",

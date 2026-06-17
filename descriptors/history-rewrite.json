@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0.0",
+  "id": "rewrite-history-DEMO",
+  "target_repo": ".",
+  "working_dir": ".",
+  "goal": "Rewrite git history to squash the last 10 commits and force-push.",
+  "task_class": "git-history",
+  "gate_command": "true",
+  "gate_dir": ".",
+  "retry_budget": 0,
+  "timeout_seconds": 60
+}

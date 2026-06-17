@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0.0",
+  "id": "purl-parser",
+  "target_repo": ".",
+  "working_dir": "gate",
+  "goal": "There is a pytest file gate/test_purl.py that fails because gate/purl.py is missing. Create gate/purl.py implementing parse_purl(purl) so every test passes. Read the test for the exact contract. Create only gate/purl.py; do not modify the test or conftest. Pure function, stdlib only. Reply with a one-line confirmation when done.",
+  "task_class": "feature",
+  "gate_command": ".venv/bin/python -m pytest gate/test_purl.py -q",
+  "gate_dir": ".",
+  "retry_budget": 1,
+  "timeout_seconds": 420
+}

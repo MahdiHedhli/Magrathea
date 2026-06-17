@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MahdiHedhli/Magrathea/specs/003-runtime/contracts/descriptor.schema.json",
+  "title": "Magrathea task descriptor",
+  "description": "A file the runtime reads instead of a hardcoded task. Paths are relative to the repo the runtime runs in (no absolute machine paths). The runtime enforces governance against task_class before dispatch.",
+  "type": "object",
+  "required": ["id", "goal", "task_class", "working_dir", "gate_command"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "default": "1.0.0" },
+    "id": { "type": "string", "description": "Stable task id, e.g. 'purl-parser'." },
+    "target_repo": {
+      "type": "string",
+      "default": ".",
+      "description": "Repo root the task runs against, relative to the runtime's cwd. '.' = this repo."
+    },
+    "working_dir": {
+      "type": "string",
+      "description": "The worker's writable scope (relative to target_repo), sandboxed workspace-write to here only, e.g. 'gate'."
+    },
+    "goal": {
+      "type": "string",
+      "description": "What the worker must achieve (make the failing gate pass, nothing more)."
+    },
+    "task_class": {
+      "type": "string",
+      "description": "feature | refactor | test-authoring | dependency-bump | security-sensitive | bulk-delete | git-history | infra. Always-human classes are refused (see governance).",
+      "examples": ["feature", "refactor", "security-sensitive", "git-history"]
+    },
+    "gate_command": {
+      "type": "string",
+      "description": "The deterministic verification command. Pass iff it exits 0. No model."
+    },
+    "gate_dir": {
+      "type": "string",
+      "default": ".",
+      "description": "Directory to run gate_command in, relative to target_repo."
+    },
+    "retry_budget": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 1,
+      "description": "codex-reply retries on a gate-red, on the same thread."
+    },
+    "timeout_seconds": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 420,
+      "description": "Per-task worker timeout (retires the old global 420s cap)."
+    }
+  }
+}

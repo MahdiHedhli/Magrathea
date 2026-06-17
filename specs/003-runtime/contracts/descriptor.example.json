@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0.0",
+  "id": "example-feature",
+  "target_repo": ".",
+  "working_dir": "gate",
+  "goal": "Make the failing gate pass by implementing the required pure function. Change only files under the working dir; do not modify the test.",
+  "task_class": "feature",
+  "gate_command": ".venv/bin/python -m pytest gate/test_purl.py -q",
+  "gate_dir": ".",
+  "retry_budget": 1,
+  "timeout_seconds": 420
+}

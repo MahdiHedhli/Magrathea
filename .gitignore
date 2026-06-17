@@ -12,6 +12,7 @@ gate/purl.py
 .env.*
 *.pem
 *.key
+auth.json
 secrets/
 # harness/editor-local config and runtime state
 .claude/

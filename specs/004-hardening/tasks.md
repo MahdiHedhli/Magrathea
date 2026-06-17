@@ -8,8 +8,8 @@
 - [X] T002 [feature] spec.md, plan.md, tasks.md; docs/HARDENING.md.
 
 ## Phase 1 — Gate-first tests
-- [ ] T010 [test] test_durable_auth.py — worker auth is a symlink to source, no copy.
-- [ ] T011 [test] test_reattach.py — reattach_plan resumes in-flight thread_id, fresh otherwise.
+- [X] T010 [test] test_durable_auth.py — worker auth is a symlink to source, no copy.
+- [X] T011 [test] test_reattach.py — reattach_plan resumes in-flight thread_id, fresh otherwise.
 
 ## Phase 2 — Implement
 - [ ] T020 [feature] worker_home.py symlink single-source (done in spike).

@@ -143,5 +143,36 @@ async function refreshAll() {
   btn.classList.remove("spin");
 }
 
+// --- theme switch (Auto -> Light -> Dark). Client-side only (localStorage);
+//     the server never writes anything. Auto follows prefers-color-scheme. ---
+const THEMES = ["auto", "light", "dark"];
+const THEME_ICON = { auto: "◐", light: "☼", dark: "☾" };
+const THEME_NAME = { auto: "Auto (system)", light: "Light", dark: "Dark" };
+const THEME_KEY = "magrathea-theme";
+
+function readTheme() {
+  let t = "auto";
+  try { t = localStorage.getItem(THEME_KEY) || "auto"; } catch (_) {}
+  return THEMES.includes(t) ? t : "auto";
+}
+function applyTheme(t) {
+  const root = document.documentElement;
+  if (t === "auto") root.removeAttribute("data-theme");
+  else root.setAttribute("data-theme", t);
+  const btn = document.getElementById("theme");
+  if (btn) { btn.textContent = THEME_ICON[t]; btn.title = "Theme: " + THEME_NAME[t] + " (tap to change)"; }
+}
+function initTheme() {
+  applyTheme(readTheme());
+  const btn = document.getElementById("theme");
+  if (!btn) return;
+  btn.addEventListener("click", () => {
+    const next = THEMES[(THEMES.indexOf(readTheme()) + 1) % THEMES.length];
+    try { localStorage.setItem(THEME_KEY, next); } catch (_) {}
+    applyTheme(next);
+  });
+}
+
 document.getElementById("refresh").addEventListener("click", refreshAll);
+initTheme();
 refreshAll();

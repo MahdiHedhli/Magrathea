@@ -36,3 +36,10 @@ At **375 px** (mobile, dark): `document.documentElement.scrollWidth == window.in
 == 375` → **no horizontal scroll**; panels reflow to a single column; header fits one line
 (sprint chip collapses < 480 px). At ≥ 680 px: two-column grid, topology/timeline span full
 width. Dark and light supported via `prefers-color-scheme`.
+
+## Theme switch
+Topbar toggle cycles **Auto → Light → Dark** (icons ◐ / ☼ / ☾), persisted
+client-side in `localStorage` (`magrathea-theme`) — the server writes nothing.
+Verified (system emulated dark): Auto → body `#0d1117` (follows system); Light →
+body `#f6f8fa` (overrides system); Dark → `#0d1117`; back to Auto. The explicit
+choice always wins over `prefers-color-scheme`.

@@ -1,12 +1,20 @@
 /* Magrathea dashboard — mobile-first, dark default, light via prefers-color-scheme. */
-:root {
+/* Theme: default + data-theme="dark" = dark; data-theme="light" = light;
+   no attribute (Auto) follows prefers-color-scheme. The explicit attribute
+   always wins over the system preference. */
+:root, :root[data-theme="dark"] {
   --bg:#0d1117; --panel:#161b22; --panel2:#1c232c; --line:#2a3441;
   --text:#e6edf3; --muted:#8b949e; --accent:#58a6ff;
   --good:#3fb950; --warn:#d29922; --danger:#f85149; --chip:#21262d;
   --radius:12px;
 }
+:root[data-theme="light"] {
+  --bg:#f6f8fa; --panel:#fff; --panel2:#f0f3f6; --line:#d0d7de;
+  --text:#1f2328; --muted:#636c76; --accent:#0969da;
+  --good:#1a7f37; --warn:#9a6700; --danger:#cf222e; --chip:#eaeef2;
+}
 @media (prefers-color-scheme: light) {
-  :root {
+  :root:not([data-theme]) {
     --bg:#f6f8fa; --panel:#fff; --panel2:#f0f3f6; --line:#d0d7de;
     --text:#1f2328; --muted:#636c76; --accent:#0969da;
     --good:#1a7f37; --warn:#9a6700; --danger:#cf222e; --chip:#eaeef2;

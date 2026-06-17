@@ -1,4 +1,8 @@
-# Magrathea / Conductor
+<p align="center">
+  <img src="assets/magrathea-hero.png" alt="Magrathea — MCP for planetary engineering &amp; build systems">
+</p>
+
+# <img src="assets/magrathea-icon.png" width="30" align="top" alt=""> Magrathea / Conductor
 
 A walking-skeleton orchestrator that drives **Codex as a controllable, gated
 worker**. It proves exactly one path end to end:

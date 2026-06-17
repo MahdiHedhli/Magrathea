@@ -12,9 +12,9 @@
 - [X] T011 [test] test_reattach.py — reattach_plan resumes in-flight thread_id, fresh otherwise.
 
 ## Phase 2 — Implement
-- [ ] T020 [feature] worker_home.py symlink single-source (done in spike).
-- [ ] T021 [feature] runtime.py: write dispatched() early; reattach_plan + resume via CLI.
-- [ ] T022 [test] gate green: `pytest runtime/tests -q`.
+- [X] T020 [feature] worker_home.py symlink single-source (done in spike).
+- [X] T021 [feature] runtime.py: write dispatched() early; reattach_plan + resume via CLI.
+- [X] T022 [test] gate green: `pytest runtime/tests -q`.
 
 ## Phase 3 — Prove & push
 - [ ] T030 auth: turn completes via symlink; symlink survives the turn.

@@ -10,11 +10,11 @@ Phase boundaries = commit boundaries. Class tags: test / feature / spike.
 - [X] T003 [feature] contracts/descriptor.schema.json + descriptor.example.json.
 
 ## Phase 1 — Gate-first tests (before implementation)
-- [ ] T010 [test] test_isolation.py — worker home has no operator MCP; dispatch carries worker CODEX_HOME.
-- [ ] T011 [test] test_gate_runner.py — arbitrary command, exit-code pass/fail, no LLM import.
-- [ ] T012 [test] test_descriptor.py — loop runs from a descriptor file, fields parsed.
-- [ ] T013 [test] test_runstate.py — runstate validates against committed schema across lifecycle.
-- [ ] T014 [test] test_governance.py — always-human descriptor refused + escalated.
+- [X] T010 [test] test_isolation.py — worker home has no operator MCP; dispatch carries worker CODEX_HOME.
+- [X] T011 [test] test_gate_runner.py — arbitrary command, exit-code pass/fail, no LLM import.
+- [X] T012 [test] test_descriptor.py — loop runs from a descriptor file, fields parsed.
+- [X] T013 [test] test_runstate.py — runstate validates against committed schema across lifecycle.
+- [X] T014 [test] test_governance.py — always-human descriptor refused + escalated.
 
 ## Phase 2 — Implement (spike first, then gate/descriptor, then runstate/governance)
 - [ ] T020 [feature] worker_home.py — isolated CODEX_HOME + copied auth + clean config.

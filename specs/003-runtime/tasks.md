@@ -26,10 +26,10 @@ Phase boundaries = commit boundaries. Class tags: test / feature / spike.
 - [X] T026 [test] gate green: `pytest runtime/tests -q`.
 
 ## Phase 3 — Prove
-- [ ] T030 descriptor-driven task → isolated worker → gate green (worker's code).
-- [ ] T031 runstate written through lifecycle; dashboard panel 5 renders live.
-- [ ] T032 always-human descriptor refused + escalated.
-- [ ] T033 record outcomes (PROOF.md). Stretch: resume-on-restart by threadId.
+- [X] T030 descriptor-driven task → isolated worker → gate green (worker's code).
+- [X] T031 runstate written through lifecycle; dashboard panel 5 renders live.
+- [X] T032 always-human descriptor refused + escalated.
+- [X] T033 record outcomes (PROOF.md). Stretch: resume-on-restart by threadId.
 
 ## Phase 4 — Sweep & push
 - [ ] T040 secrets sweep (no auth.json/CODEX_HOME/abs path); commit; reconcile no-force; push; NTFY.

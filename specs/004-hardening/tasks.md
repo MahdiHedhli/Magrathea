@@ -17,8 +17,8 @@
 - [X] T022 [test] gate green: `pytest runtime/tests -q`.
 
 ## Phase 3 — Prove & push
-- [ ] T030 auth: turn completes via symlink; symlink survives the turn.
-- [ ] T031 reattach: real interrupt mid-flight -> restart -> same thread_id resumed,
+- [X] T030 auth: turn completes via symlink; symlink survives the turn.
+- [X] T031 reattach: real interrupt mid-flight -> restart -> same thread_id resumed,
   no new session, gate verdict. Record thread_id continuity.
-- [ ] T032 stale thread -> escalate (not restart).
-- [ ] T033 record (PROOF.md); secrets sweep; commit; push no-force; NTFY.
+- [X] T032 stale thread -> escalate (not restart).
+- [X] T033 record (PROOF.md); secrets sweep; commit; push no-force; NTFY.

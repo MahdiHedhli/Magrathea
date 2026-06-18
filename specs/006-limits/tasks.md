@@ -6,8 +6,8 @@
 - [X] T001 spec.md, plan.md, tasks.md; rate_limits source recorded (scripts/spike_usage.py).
 
 ## Phase A — readable Codex adapter
-- [ ] T010 [test] test_usage_read.py — parse_codex_rate_limits -> contract windows (schema-valid).
-- [ ] T011 [feature] runtime/usage.py: parse_codex_rate_limits, read_codex_usage, capture_from_event.
+- [X] T010 [test] test_usage_read.py — parse_codex_rate_limits -> contract windows (schema-valid).
+- [X] T011 [feature] runtime/usage.py: parse_codex_rate_limits, read_codex_usage, capture_from_event.
 
 ## Phase B — detect adapter + reset wiring
 - [ ] T020 [test] test_usage_detect.py — classify limit-hit as third outcome; spend tally; reset compute.

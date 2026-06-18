@@ -94,11 +94,25 @@ const RENDER = {
 
   budget(d) {
     if (d.status === "pending") return pendingCard("Budget &amp; limits", d, "▱");
+    const thr = d.stop_threshold_pct;
+    const resetIn = (iso) => {
+      if (!iso) return "";
+      const s = (Date.parse(iso) - Date.now()) / 1000;
+      if (isNaN(s) || s <= 0) return "now";
+      if (s < 3600) return Math.round(s / 60) + "m";
+      if (s < 86400) return Math.round(s / 3600) + "h";
+      return Math.round(s / 86400) + "d";
+    };
     const provs = (d.providers || []).map((p) => `
       <div class="phase"><h3>${esc(p.provider)} · ${esc(p.adapter)}</h3>
-        ${(p.windows || []).map((w) => `<div class="task"><span>${esc(w.window)}</span>
-          <span class="rmodel">${w.remaining_pct == null ? "—" : w.remaining_pct + "%"}</span></div>`).join("")}</div>`).join("");
-    return `<div class="thr">stop at <b>${esc(d.stop_threshold_pct)}%</b></div>${provs}`;
+        ${(p.windows || []).map((w) => {
+          const low = w.remaining_pct != null && thr != null && w.remaining_pct < thr;
+          const pct = w.remaining_pct == null ? "—" : w.remaining_pct + "%";
+          const reset = w.resets_at ? ` · resets ${esc(resetIn(w.resets_at))}` : "";
+          return `<div class="task"><span>${esc(w.window)}<span class="when">${reset}</span></span>
+            <span class="rmodel"${low ? ' style="color:var(--danger)"' : ""}>${pct}</span></div>`;
+        }).join("")}</div>`).join("");
+    return `<div class="thr">stop at <b>${esc(thr)}%</b> remaining</div>${provs}`;
   },
 };
 

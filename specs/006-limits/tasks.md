@@ -18,6 +18,6 @@
 - [X] T031 [feature] runtime/limits.py; run_queue pre-dispatch headroom check.
 
 ## Phase D — panel 6 live + prove
-- [ ] T040 [feature] usage.py refresh writes .magrathea/usage.json; build_snapshot (contract).
-- [ ] T041 prove: real Codex usage in panel 6; simulated limit-hit (not forced); threshold halt; capture panel 6.
-- [ ] T042 record PROOF.md; sweep; final NTFY tally.
+- [X] T040 [feature] usage.py refresh writes .magrathea/usage.json; build_snapshot (contract).
+- [X] T041 prove: real Codex usage in panel 6; simulated limit-hit (not forced); threshold halt; capture panel 6.
+- [X] T042 record PROOF.md; sweep; final NTFY tally.

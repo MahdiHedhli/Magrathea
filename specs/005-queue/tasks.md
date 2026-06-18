@@ -20,7 +20,7 @@
 - [X] T022 gate green: `pytest runtime/tests -q`.
 
 ## Phase 3 — Prove & push
-- [ ] T030 2-task backlog runs sequentially green (worker's code); runstate progresses.
-- [ ] T031 backlog-with-block: always-human escalated+skipped, others complete.
-- [ ] T032 interrupt mid-queue -> restart -> reattach in-flight + finish remainder.
-- [ ] T033 dashboard panel 5 renders the backlog; record (PROOF.md); sweep; push; NTFY tally.
+- [X] T030 2-task backlog runs sequentially green (worker's code); runstate progresses.
+- [X] T031 backlog-with-block: always-human escalated+skipped, others complete.
+- [X] T032 interrupt mid-queue -> restart -> reattach in-flight + finish remainder.
+- [X] T033 dashboard panel 5 renders the backlog; record (PROOF.md); sweep; push; NTFY tally.

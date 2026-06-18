@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0.0",
+  "id": "backlog-with-block",
+  "descriptors": [
+    "descriptors/purl.json",
+    "descriptors/history-rewrite.json",
+    "descriptors/slug.json"
+  ]
+}

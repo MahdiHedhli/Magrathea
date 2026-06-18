@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0.0",
+  "id": "backlog-demo",
+  "descriptors": [
+    "descriptors/purl.json",
+    "descriptors/slug.json"
+  ]
+}

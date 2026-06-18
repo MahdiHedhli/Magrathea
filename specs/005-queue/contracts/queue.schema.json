@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MahdiHedhli/Magrathea/specs/005-queue/contracts/queue.schema.json",
+  "title": "Magrathea queue manifest",
+  "description": "An ordered backlog of descriptor files the runtime works one at a time, sequentially, through the existing dispatch/gate/runstate/escalate loop. Paths are relative to the repo root.",
+  "type": "object",
+  "required": ["descriptors"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "default": "1.0.0" },
+    "id": { "type": "string", "description": "Stable queue id, e.g. 'backlog-demo'." },
+    "descriptors": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "description": "Path to a descriptor JSON, in order." },
+      "description": "Ordered descriptor paths. Processed sequentially; a blocked one is skipped, the rest continue."
+    }
+  }
+}

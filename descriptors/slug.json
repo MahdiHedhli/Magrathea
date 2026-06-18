@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0.0",
+  "id": "slugify",
+  "target_repo": ".",
+  "working_dir": "tasks/slug",
+  "goal": "There is a pytest file test_slug.py in your current working directory that fails because slug.py is missing. Create slug.py (here, in your working directory) implementing slugify(text) so every test passes. Read test_slug.py for the exact contract. Create ONLY slug.py; do not modify test_slug.py or conftest.py. Pure function, Python standard library only. Reply with a one-line confirmation when done.",
+  "task_class": "feature",
+  "gate_command": ".venv/bin/python -m pytest tasks/slug/test_slug.py -q",
+  "gate_dir": ".",
+  "retry_budget": 1,
+  "timeout_seconds": 420
+}

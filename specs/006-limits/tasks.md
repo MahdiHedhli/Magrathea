@@ -14,8 +14,8 @@
 - [X] T021 [feature] DetectAdapter (Claude); compute_reset; wire queue pause -> runstate.paused_reset_time.
 
 ## Phase C — stop threshold
-- [ ] T030 [test] test_limits.py — stop_threshold from governance; halts queue below threshold + pages.
-- [ ] T031 [feature] runtime/limits.py; run_queue pre-dispatch headroom check.
+- [X] T030 [test] test_limits.py — stop_threshold from governance; halts queue below threshold + pages.
+- [X] T031 [feature] runtime/limits.py; run_queue pre-dispatch headroom check.
 
 ## Phase D — panel 6 live + prove
 - [ ] T040 [feature] usage.py refresh writes .magrathea/usage.json; build_snapshot (contract).

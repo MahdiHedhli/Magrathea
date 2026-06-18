@@ -8,6 +8,8 @@ the usage contract (specs/002-dashboard/contracts/usage.schema.json). Headroom =
 """
 from __future__ import annotations
 
+import json
+import os
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
@@ -138,3 +140,55 @@ class DetectAdapter:
             {"window": _window_name(m), "used": None, "limit": None,
              "remaining_pct": None, "resets_at": None}
             for m in self.windows_minutes]}
+
+
+# --- snapshot file (.magrathea/usage.json — the dashboard panel 6 reads it) --
+def write_snapshot_file(snapshot: dict, path=None) -> None:
+    p = path or config.USAGE_PATH
+    p.parent.mkdir(parents=True, exist_ok=True)
+    tmp = p.with_suffix(".json.tmp")
+    tmp.write_text(json.dumps(snapshot, indent=2), encoding="utf-8")
+    os.replace(tmp, p)
+
+
+def load_snapshot(path=None) -> Optional[dict]:
+    p = path or config.USAGE_PATH
+    try:
+        return json.loads(p.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+
+
+def record_codex(rate_limits, stop_threshold_pct=None) -> dict:
+    """Build a usage snapshot from a captured Codex rate_limits (read adapter)
+    plus a Claude detect stub, and write it. Updates panel 6 and the queue's
+    headroom view with no extra turn."""
+    providers = [{"provider": "openai-codex", "adapter": "read",
+                  "windows": parse_codex_rate_limits(rate_limits)},
+                 DetectAdapter().snapshot()]
+    if stop_threshold_pct is None:
+        from runtime import limits
+        stop_threshold_pct = limits.stop_threshold_pct()
+    snap = build_snapshot(providers, stop_threshold_pct)
+    write_snapshot_file(snap)
+    return snap
+
+
+def main(argv=None) -> int:
+    """Refresh the usage snapshot from a live read (for panel 6)."""
+    cdx = read_codex_usage()
+    if not cdx:
+        print("[usage] no Codex rate_limits captured")
+        return 1
+    from runtime import limits
+    snap = build_snapshot([cdx, DetectAdapter().snapshot()],
+                          limits.stop_threshold_pct())
+    write_snapshot_file(snap)
+    print(f"[usage] wrote {config.USAGE_PATH} :: "
+          f"{[ (w['window'], w['remaining_pct']) for w in cdx['windows'] ]}")
+    return 0
+
+
+if __name__ == "__main__":
+    import sys
+    sys.exit(main(sys.argv))

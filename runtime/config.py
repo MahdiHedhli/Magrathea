@@ -23,6 +23,7 @@ DEFAULT_WORKER_MODEL = "gpt-5.5"
 # Runstate (gitignored runtime state) + the committed contract it must satisfy.
 MAGRATHEA_DIR = REPO_ROOT / ".magrathea"
 RUNSTATE_PATH = MAGRATHEA_DIR / "runstate.json"
+USAGE_PATH = MAGRATHEA_DIR / "usage.json"   # usage adapter output (dashboard panel 6)
 RUNSTATE_SCHEMA = (REPO_ROOT / "specs" / "002-dashboard" / "contracts"
                    / "runstate.schema.json")
 

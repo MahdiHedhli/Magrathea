@@ -101,6 +101,11 @@ def execute_descriptor(descriptor, handle, log_path=None) -> Outcome:
         if not captured["tid"] and thread_id:
             handle.dispatched(thread_id, config.DEFAULT_WORKER_PROVIDER, model)
         print(f"[runtime] turn done ok={result.ok} is_error={result.is_error}")
+        if captured["rate_limits"]:  # opportunistic usage snapshot (panel 6 + headroom)
+            try:
+                usage.record_codex(captured["rate_limits"])
+            except Exception:
+                pass
 
         if result.is_error or result.timed_out:
             if _is_limit_hit(result.text):

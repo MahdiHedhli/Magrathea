@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from conductor import ntfy
-from runtime import config, descriptor as descriptor_mod, runtime
+from runtime import config, descriptor as descriptor_mod, limits, runtime, usage
 
 _TERMINAL = runtime._TERMINAL_TASK  # passed / failed / escalated
 
@@ -167,6 +167,7 @@ def run_queue(manifest_path, log_path=None) -> QueueResult:
         print(f"[queue] resuming '{name}' from prior runstate")
     qrs.write()
 
+    threshold = limits.stop_threshold_pct()
     done = blocked = skipped = dispatched = 0
     for d in descriptors:
         t = qrs._task(d.id)
@@ -179,6 +180,18 @@ def run_queue(manifest_path, log_path=None) -> QueueResult:
                 skipped += 1
             print(f"[queue] skip '{d.id}' (already {t['status']})")
             continue
+
+        # stop-threshold: do not START new work below the governance headroom
+        if action == "fresh":
+            wp = limits.provider(usage.load_snapshot(), config.DEFAULT_WORKER_PROVIDER)
+            if wp and limits.headroom_below_threshold(wp, threshold):
+                mr = limits.min_remaining_pct(wp)
+                qrs.mark_paused(note=f"worker headroom {mr}% < {threshold}% before {d.id}")
+                ntfy.blocker("Queue", f"paused | stop-threshold | worker headroom "
+                             f"{mr}% < {threshold}% before {d.id}; restart after reset")
+                print(f"[queue] PAUSED stop-threshold: headroom {mr}% < "
+                      f"{threshold}% — not starting '{d.id}'")
+                return QueueResult(done, blocked, skipped, dispatched, "paused")
 
         handle = qrs.handle(d.id)
         if action == "reattach":

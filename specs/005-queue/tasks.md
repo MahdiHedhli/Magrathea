@@ -10,9 +10,9 @@
   (purl+history-rewrite+slug).
 
 ## Phase 1 — Gate-first tests
-- [ ] T010 test_queue.py — manifest loads ordered; QueueRunstate multi-task validates against schema.
-- [ ] T011 test_queue.py — run_queue processes in order, skips a blocked item and continues.
-- [ ] T012 test_queue.py — resume seeds from prior runstate; reattach an in-flight item, continue remainder.
+- [X] T010 test_queue.py — manifest loads ordered; QueueRunstate multi-task validates against schema.
+- [X] T011 test_queue.py — run_queue processes in order, skips a blocked item and continues.
+- [X] T012 test_queue.py — resume seeds from prior runstate; reattach an in-flight item, continue remainder.
 
 ## Phase 2 — Implement
 - [ ] T020 refactor runtime.execute_descriptor (shared core, handle protocol, limit-hit detect).

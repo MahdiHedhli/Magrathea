@@ -192,10 +192,12 @@ def run_queue(manifest_path, log_path=None) -> QueueResult:
             done += 1
             dispatched += 1
         elif outcome.status == "BLOCKED_LIMIT":
-            qrs.mark_paused(note=f"limit-hit on {d.id}; {outcome.detail}")
-            ntfy.blocker("Queue", f"paused | limit-hit | {d.id}: "
-                         f"{outcome.detail[:90]}; checkpoint saved, restart to resume")
-            print(f"[queue] PAUSED on limit-hit at '{d.id}' — checkpoint saved")
+            qrs.mark_paused(reset_time=outcome.reset_time,
+                            note=f"limit-hit on {d.id}; resets {outcome.reset_time}")
+            ntfy.blocker("Queue", f"paused | limit-hit | {d.id} resets "
+                         f"{outcome.reset_time}; checkpoint saved, restart to resume")
+            print(f"[queue] PAUSED on limit-hit at '{d.id}' "
+                  f"(resets {outcome.reset_time}) — checkpoint saved")
             return QueueResult(done, blocked, skipped, dispatched, "paused")
         else:  # BLOCKED_GOVERNANCE / INFRA / GATE — recorded+escalated by handle
             blocked += 1

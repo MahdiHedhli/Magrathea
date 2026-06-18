@@ -15,7 +15,8 @@ from typing import Optional
 
 from conductor import ntfy
 from conductor.mcp_client import CodexMCPClient
-from runtime import config, descriptor as descriptor_mod, governance, worker_home
+from runtime import (config, descriptor as descriptor_mod, governance, usage,
+                     worker_home)
 from runtime.gate import GateResult, run_gate
 from runtime.runstate import RunstateWriter
 
@@ -28,6 +29,7 @@ class Outcome:
     thread_id: Optional[str]
     gate: Optional[GateResult]
     detail: str
+    reset_time: Optional[str] = None  # on BLOCKED_LIMIT: when the window resets
 
 
 _LIMIT_MARKERS = ("rate limit", "rate_limit", "usage limit", "quota",
@@ -79,13 +81,16 @@ def execute_descriptor(descriptor, handle, log_path=None) -> Outcome:
 
         # Write 'dispatched' AS SOON as the threadId is known (session_configured),
         # so an interrupt mid-turn leaves a true in-flight runstate to reattach.
-        captured = {"tid": None}
+        captured = {"tid": None, "rate_limits": None}
 
         def _on_event(emsg, thread_id):
             if thread_id and not captured["tid"]:
                 captured["tid"] = thread_id
                 handle.dispatched(thread_id, config.DEFAULT_WORKER_PROVIDER, model)
                 print(f"[runtime] threadId={thread_id} (in-flight)")
+            rl = usage.capture_from_event(emsg)   # opportunistic usage capture
+            if rl:
+                captured["rate_limits"] = rl
 
         result = client.codex(
             prompt=descriptor.goal, cwd=str(worker_cwd), sandbox="workspace-write",
@@ -99,8 +104,10 @@ def execute_descriptor(descriptor, handle, log_path=None) -> Outcome:
 
         if result.is_error or result.timed_out:
             if _is_limit_hit(result.text):
+                reset = (usage.limit_reset_from_rate_limits(captured["rate_limits"])
+                         or usage.compute_reset(300))
                 return Outcome("BLOCKED_LIMIT", thread_id, None,
-                               f"limit-hit: {result.text[:120]}")
+                               f"limit-hit: {result.text[:120]}", reset_time=reset)
             g = _gate()
             handle.gate_recorded(g.passed, g.summary, g.returncode)
             handle.escalated(f"worker infra failure: {result.text[:160]}")
@@ -119,8 +126,10 @@ def execute_descriptor(descriptor, handle, log_path=None) -> Outcome:
                                        timeout=descriptor.timeout_seconds)
             if reply.is_error or reply.timed_out:
                 if _is_limit_hit(reply.text):
+                    reset = (usage.limit_reset_from_rate_limits(captured["rate_limits"])
+                             or usage.compute_reset(300))
                     return Outcome("BLOCKED_LIMIT", thread_id, g,
-                                   f"limit-hit: {reply.text[:120]}")
+                                   f"limit-hit: {reply.text[:120]}", reset_time=reset)
                 handle.escalated(f"retry infra failure: {reply.text[:160]}")
                 return Outcome("BLOCKED_INFRA", thread_id, g, "retry infra failure")
             g = _gate()

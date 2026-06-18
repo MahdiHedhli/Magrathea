@@ -10,8 +10,8 @@
 - [X] T011 [feature] runtime/usage.py: parse_codex_rate_limits, read_codex_usage, capture_from_event.
 
 ## Phase B — detect adapter + reset wiring
-- [ ] T020 [test] test_usage_detect.py — classify limit-hit as third outcome; spend tally; reset compute.
-- [ ] T021 [feature] DetectAdapter (Claude); compute_reset; wire queue pause -> runstate.paused_reset_time.
+- [X] T020 [test] test_usage_detect.py — classify limit-hit as third outcome; spend tally; reset compute.
+- [X] T021 [feature] DetectAdapter (Claude); compute_reset; wire queue pause -> runstate.paused_reset_time.
 
 ## Phase C — stop threshold
 - [ ] T030 [test] test_limits.py — stop_threshold from governance; halts queue below threshold + pages.

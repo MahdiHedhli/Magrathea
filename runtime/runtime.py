@@ -24,10 +24,20 @@ _TERMINAL_TASK = {"passed", "failed", "escalated"}
 
 @dataclass
 class Outcome:
-    status: str          # PASS | BLOCKED_GOVERNANCE | BLOCKED_INFRA | BLOCKED_GATE
+    status: str  # PASS|BLOCKED_GOVERNANCE|BLOCKED_INFRA|BLOCKED_GATE|BLOCKED_LIMIT
     thread_id: Optional[str]
     gate: Optional[GateResult]
     detail: str
+
+
+_LIMIT_MARKERS = ("rate limit", "rate_limit", "usage limit", "quota",
+                  "too many requests", "429", "insufficient_quota")
+
+
+def _is_limit_hit(text: str) -> bool:
+    """A provider limit-hit is a third outcome — pause, not fail (Constitution VII)."""
+    t = (text or "").lower()
+    return any(m in t for m in _LIMIT_MARKERS)
 
 
 def _retry_prompt(feedback: str) -> str:
@@ -36,20 +46,18 @@ def _retry_prompt(feedback: str) -> str:
             "Reply with a one-line confirmation when done.")
 
 
-def run(descriptor, writer: Optional[RunstateWriter] = None,
-        log_path=None) -> Outcome:
-    gov = governance.load()
-    decision = gov.check(descriptor)
-
-    if writer is None:
-        writer = RunstateWriter(config.RUNSTATE_PATH, run_id=f"run-{descriptor.id}",
-                                current_sprint="003-runtime")
-    writer.queue(descriptor)
+def execute_descriptor(descriptor, handle, log_path=None) -> Outcome:
+    """Shared per-descriptor core: governance -> isolated dispatch (writing
+    'dispatched' as soon as the threadId is known) -> gate -> retry -> resolve.
+    Writes via the HANDLE protocol (dispatched / gate_recorded / done /
+    escalated), so both run() and the queue reuse it. A limit-hit returns
+    BLOCKED_LIMIT (pause, not escalate)."""
+    decision = governance.load().check(descriptor)
 
     # --- governance enforcement: always-human is refused, never dispatched ---
     if not decision.allowed:
         print(f"[runtime] REFUSED (governance): {decision.reason}")
-        writer.escalated(decision.reason)
+        handle.escalated(decision.reason)
         return Outcome("BLOCKED_GOVERNANCE", None, None, decision.reason)
 
     model = decision.model or config.DEFAULT_WORKER_MODEL
@@ -69,15 +77,14 @@ def run(descriptor, writer: Optional[RunstateWriter] = None,
     with CodexMCPClient(config.CODEX_MCP_CMD, log_path=log_path, env=env) as client:
         client.initialize(timeout=config.INITIALIZE_TIMEOUT)
 
-        # Write runstate 'dispatched' AS SOON as the threadId is known
-        # (session_configured), so an interrupt mid-turn leaves a true in-flight
-        # runstate that reattach-on-restart can resume.
+        # Write 'dispatched' AS SOON as the threadId is known (session_configured),
+        # so an interrupt mid-turn leaves a true in-flight runstate to reattach.
         captured = {"tid": None}
 
         def _on_event(emsg, thread_id):
             if thread_id and not captured["tid"]:
                 captured["tid"] = thread_id
-                writer.dispatched(thread_id, config.DEFAULT_WORKER_PROVIDER, model)
+                handle.dispatched(thread_id, config.DEFAULT_WORKER_PROVIDER, model)
                 print(f"[runtime] threadId={thread_id} (in-flight)")
 
         result = client.codex(
@@ -87,40 +94,54 @@ def run(descriptor, writer: Optional[RunstateWriter] = None,
         )
         thread_id = result.thread_id or captured["tid"] or ""
         if not captured["tid"] and thread_id:
-            writer.dispatched(thread_id, config.DEFAULT_WORKER_PROVIDER, model)
+            handle.dispatched(thread_id, config.DEFAULT_WORKER_PROVIDER, model)
         print(f"[runtime] turn done ok={result.ok} is_error={result.is_error}")
 
-        # infra failure: record the gate for the record, escalate, no retry
         if result.is_error or result.timed_out:
+            if _is_limit_hit(result.text):
+                return Outcome("BLOCKED_LIMIT", thread_id, None,
+                               f"limit-hit: {result.text[:120]}")
             g = _gate()
-            writer.gate_recorded(g.passed, g.summary, g.returncode)
-            writer.escalated(f"worker infra failure: {result.text[:160]}")
+            handle.gate_recorded(g.passed, g.summary, g.returncode)
+            handle.escalated(f"worker infra failure: {result.text[:160]}")
             return Outcome("BLOCKED_INFRA", thread_id, g, "worker infra failure")
 
         g = _gate()
-        writer.gate_recorded(g.passed, g.summary, g.returncode)
+        handle.gate_recorded(g.passed, g.summary, g.returncode)
         print(f"[runtime] gate(1): passed={g.passed} :: {g.summary}")
         if g.passed:
-            writer.done()
+            handle.done()
             return Outcome("PASS", thread_id, g, "gate green (first attempt)")
 
-        # gate-red: codex-reply retries up to the descriptor's budget
         for attempt in range(1, descriptor.retry_budget + 1):
             print(f"[runtime] gate red -> codex-reply retry {attempt}/{descriptor.retry_budget}")
             reply = client.codex_reply(thread_id, _retry_prompt(g.feedback),
                                        timeout=descriptor.timeout_seconds)
             if reply.is_error or reply.timed_out:
-                writer.escalated(f"retry infra failure: {reply.text[:160]}")
+                if _is_limit_hit(reply.text):
+                    return Outcome("BLOCKED_LIMIT", thread_id, g,
+                                   f"limit-hit: {reply.text[:120]}")
+                handle.escalated(f"retry infra failure: {reply.text[:160]}")
                 return Outcome("BLOCKED_INFRA", thread_id, g, "retry infra failure")
             g = _gate()
-            writer.gate_recorded(g.passed, g.summary, g.returncode)
+            handle.gate_recorded(g.passed, g.summary, g.returncode)
             print(f"[runtime] gate(retry {attempt}): passed={g.passed} :: {g.summary}")
             if g.passed:
-                writer.done()
+                handle.done()
                 return Outcome("PASS", thread_id, g, f"gate green after {attempt} retry")
 
-        writer.escalated(f"gate failing after {descriptor.retry_budget} retries: {g.summary}")
+        handle.escalated(f"gate failing after {descriptor.retry_budget} retries: {g.summary}")
         return Outcome("BLOCKED_GATE", thread_id, g, "gate red after retries")
+
+
+def run(descriptor, writer: Optional[RunstateWriter] = None,
+        log_path=None) -> Outcome:
+    """Single-descriptor run: a one-task runstate writer + the shared core."""
+    if writer is None:
+        writer = RunstateWriter(config.RUNSTATE_PATH, run_id=f"run-{descriptor.id}",
+                                current_sprint="003-runtime")
+    writer.queue(descriptor)
+    return execute_descriptor(descriptor, writer, log_path)
 
 
 # --- reattach-on-restart (feature 004) --------------------------------------
@@ -169,18 +190,17 @@ def _resume_cli(thread_id, prompt, cwd, env, timeout):
     return (proc.returncode == 0 and not stale), stale, out
 
 
-def resume(descriptor, thread_id, log_path=None) -> Outcome:
-    """Reattach an in-flight thread by id and drive it to a gate verdict."""
+def reattach_descriptor(descriptor, thread_id, handle, log_path=None) -> Outcome:
+    """Shared reattach core: resume an in-flight thread by id (no new session) and
+    drive it to a gate verdict. Writes via the handle protocol; a stale/gone
+    thread escalates (NTFY), never restarts."""
     repo = (config.REPO_ROOT / descriptor.target_repo).resolve()
     worker_cwd = (repo / descriptor.working_dir).resolve()
     gate_cwd = (repo / descriptor.gate_dir).resolve()
     worker_home.ensure()
     env = worker_home.codex_env()
 
-    writer = RunstateWriter(config.RUNSTATE_PATH, run_id=f"run-{descriptor.id}",
-                            current_sprint="004-hardening")
-    writer.queue(descriptor)
-    writer.dispatched(thread_id, config.DEFAULT_WORKER_PROVIDER,
+    handle.dispatched(thread_id, config.DEFAULT_WORKER_PROVIDER,
                       config.DEFAULT_WORKER_MODEL)  # re-assert the SAME thread
     print(f"[runtime] REATTACH thread {thread_id} (no new session) cwd={worker_cwd}")
 
@@ -190,19 +210,27 @@ def resume(descriptor, thread_id, log_path=None) -> Outcome:
         why = "thread stale/gone" if stale else "resume errored"
         msg = f"reattach failed ({why}) for thread {thread_id}"
         print(f"[runtime] {msg}")
-        writer.escalated(msg)
+        handle.escalated(msg)
         ntfy.blocker("Runtime", f"blocked | reattach {why} | thread "
                      f"{thread_id[:12]}…; escalating, not restarting")
         return Outcome("BLOCKED_INFRA", thread_id, None, msg)
 
     g = run_gate(descriptor.gate_command, str(gate_cwd), descriptor.timeout_seconds)
-    writer.gate_recorded(g.passed, g.summary, g.returncode)
+    handle.gate_recorded(g.passed, g.summary, g.returncode)
     print(f"[runtime] gate after reattach: passed={g.passed} :: {g.summary}")
     if g.passed:
-        writer.done()
+        handle.done()
         return Outcome("PASS", thread_id, g, "gate green after reattach (same thread)")
-    writer.escalated(f"gate red after reattach: {g.summary}")
+    handle.escalated(f"gate red after reattach: {g.summary}")
     return Outcome("BLOCKED_GATE", thread_id, g, "gate red after reattach")
+
+
+def resume(descriptor, thread_id, log_path=None) -> Outcome:
+    """Single-descriptor reattach: a one-task runstate writer + the shared core."""
+    writer = RunstateWriter(config.RUNSTATE_PATH, run_id=f"run-{descriptor.id}",
+                            current_sprint="004-hardening")
+    writer.queue(descriptor)
+    return reattach_descriptor(descriptor, thread_id, writer, log_path)
 
 
 def main(argv) -> int:

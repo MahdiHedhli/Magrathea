@@ -15,9 +15,9 @@
 - [X] T012 test_queue.py — resume seeds from prior runstate; reattach an in-flight item, continue remainder.
 
 ## Phase 2 — Implement
-- [ ] T020 refactor runtime.execute_descriptor (shared core, handle protocol, limit-hit detect).
-- [ ] T021 runtime/queue.py: load_manifest, QueueRunstate, run_queue.
-- [ ] T022 gate green: `pytest runtime/tests -q`.
+- [X] T020 refactor runtime.execute_descriptor (shared core, handle protocol, limit-hit detect).
+- [X] T021 runtime/queue.py: load_manifest, QueueRunstate, run_queue.
+- [X] T022 gate green: `pytest runtime/tests -q`.
 
 ## Phase 3 — Prove & push
 - [ ] T030 2-task backlog runs sequentially green (worker's code); runstate progresses.

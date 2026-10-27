@@ -24,7 +24,7 @@ worker, `gpt-5.5`), Claude (orchestrator + last-resort), Gemini & Grok (reserved
 slots); stop at 15% remaining headroom; limit-hit → pause + auto-resume at reset
 (scheduler is v2); always-human = security-sensitive, bulk deletes, and
 **git/GitHub history & log modification (immutable history)**; commit per phase;
-report to `Mahdi-Dev`; escalate after 2 gate failures; 420 s per-task timeout.
+report to `<private-notification-topic>`; escalate after 2 gate failures; 420 s per-task timeout.
 
 **Deferred to v2** (intent captured, build later): the heartbeat/auto-resume
 scheduler; Gemini/Grok worker adapters and their usage `read` adapters; the

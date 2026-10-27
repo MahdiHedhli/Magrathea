@@ -13,6 +13,9 @@ from . import config
 
 
 def _publish(title: str, body: str, headers: dict) -> bool:
+    if not config.NTFY_TOPIC.strip():
+        print("[ntfy] NOT_CONFIGURED: set CONDUCTOR_NTFY_TOPIC privately")
+        return False
     url = f"{config.NTFY_BASE_URL.rstrip('/')}/{config.NTFY_TOPIC}"
     req = urllib.request.Request(url, data=body.encode("utf-8"), method="POST")
     req.add_header("Title", title)

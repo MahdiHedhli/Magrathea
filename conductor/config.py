@@ -51,4 +51,5 @@ DISPATCH_TIMEOUT = 420
 
 # --- NTFY reporting ----------------------------------------------------------
 NTFY_BASE_URL = os.environ.get("CONDUCTOR_NTFY_URL", "https://ntfy.sh")
-NTFY_TOPIC = os.environ.get("CONDUCTOR_NTFY_TOPIC", "Mahdi-Dev")
+# No repository default: configure the destination privately.
+NTFY_TOPIC = os.environ.get("CONDUCTOR_NTFY_TOPIC", "")

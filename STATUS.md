@@ -122,7 +122,7 @@ cd ~/dev/conductor
 
 Environment knobs: `CONDUCTOR_WORKER_MODEL`, `CONDUCTOR_NTFY_URL`,
 `CONDUCTOR_NTFY_TOPIC` (defaults: codex-default model, `https://ntfy.sh`,
-`Mahdi-Dev`).
+and no topic; configure `CONDUCTOR_NTFY_TOPIC` privately).
 
 ---
 

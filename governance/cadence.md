@@ -8,8 +8,9 @@
 recoverable. Phase boundaries are commit boundaries.
 
 ## Reporting (NTFY)
-- Topic: **`Mahdi-Dev`** (`https://ntfy.sh/Mahdi-Dev`; swap base URL if
-  self-hosted, keep the topic).
+- Configure `CONDUCTOR_NTFY_TOPIC` privately; there is no default topic.
+  Set `CONDUCTOR_NTFY_URL` privately for a self-hosted endpoint. Do not commit
+  destination values or credentials. A publication receipt is not operator approval.
 - **Ping on**: run start, each phase, every blocker, **limit-pause**, run-end.
 - Format — Title `Conductor · <phase>`, body `<status> | <task or issue> | <detail>`.
 - Progress pings: `Tags: white_check_mark`. Blockers: `Priority: high` +

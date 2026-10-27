@@ -23,7 +23,7 @@ Recorded 2026-06-16. Server started on `127.0.0.1:8787` via the preview tool
 - **Governance** (from `governance/`): always-human = Security-sensitive, Bulk deletes,
   Git/GitHub history or log-history modification; escalate list; model floors; stop at 15%.
 - **Timeline** (`git log` + optional ntfy): commits plus **17 live events** from topic
-  `Mahdi-Dev` (degrades to git-only if unreachable; topic read from config, not hardcoded).
+  `<private-notification-topic>` (degrades to git-only if unreachable; topic read from config, not hardcoded).
 
 ## Panels 5–6 degrade gracefully (stub now)
 From the running page (`preview_eval`, stores absent):
